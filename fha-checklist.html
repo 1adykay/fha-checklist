@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FHA Property Checklist | McKayla Jodon</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark: #1A2E1A;
+    --green: #5A8A4A;
+    --light-green: #A8D48A;
+    --pale: #F2F7EF;
+    --sand: #D8EDD0;
+    --pink: #FF1493;
+    --warn: #C4622D;
+    --white: #FFFFFF;
+    --gray: #6B7B6B;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--pale);
+    color: var(--dark);
+    padding: 32px 20px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .header {
+    background: var(--dark);
+    padding: 32px 36px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--pink);
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .header h1 em { font-style: italic; color: var(--light-green); }
+  .header p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 300;
+  }
+  .property-info {
+    background: rgba(255,255,255,0.06);
+    padding: 16px 20px;
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .info-field label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--light-green);
+    margin-bottom: 6px;
+  }
+  .info-field input {
+    width: 100%;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    padding: 4px 0;
+    outline: none;
+  }
+  .info-field input::placeholder { color: rgba(255,255,255,0.25); }
+
+  .section {
+    background: var(--white);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-header.pass { background: var(--dark); }
+  .section-header.warn { background: var(--warn); }
+  .section-header.rural { background: #2A4A6B; }
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+  .section-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+  .pass .section-icon { background: var(--light-green); }
+  .warn .section-icon { background: rgba(255,255,255,0.2); }
+  .rural .section-icon { background: rgba(255,255,255,0.2); }
+
+  .items { padding: 8px 0; }
+  .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--pale);
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .item:last-child { border-bottom: none; }
+  .item:hover { background: var(--pale); }
+  .checkbox {
+    width: 22px;
+    height: 22px;
+    border: 2px solid #C8D8C8;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .checkbox.checked { background: var(--green); border-color: var(--green); }
+  .checkbox.flagged { background: var(--warn); border-color: var(--warn); }
+  .checkbox svg { display: none; }
+  .checkbox.checked svg, .checkbox.flagged svg { display: block; }
+
+  .item-text { flex: 1; }
+  .item-label {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--dark);
+    line-height: 1.4;
+    margin-bottom: 2px;
+  }
+  .item-label.checked-text { text-decoration: line-through; color: var(--gray); }
+  .item-note {
+    font-size: 12px;
+    color: var(--gray);
+    font-weight: 300;
+    line-height: 1.4;
+  }
+  .item-status {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .status-btn {
+    width: 28px;
+    height: 28px;
+    border: 1.5px solid #C8D8C8;
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    transition: all 0.15s;
+  }
+  .status-btn.ok { border-color: var(--green); background: var(--green); }
+  .status-btn.flag { border-color: var(--warn); background: var(--warn); }
+
+  .notes-section {
+    background: var(--white);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .notes-section h3 {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 12px;
+  }
+  textarea {
+    width: 100%;
+    min-height: 100px;
+    border: 1px solid #D8EDD0;
+    padding: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--dark);
+    resize: vertical;
+    outline: none;
+    background: var(--pale);
+    transition: border-color 0.2s;
+  }
+  textarea:focus { border-color: var(--green); }
+
+  .verdict {
+    background: var(--dark);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .verdict h3 {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--light-green);
+    margin-bottom: 16px;
+  }
+  .verdict-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .verdict-btn {
+    padding: 14px 10px;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    background: none;
+    color: rgba(255,255,255,0.6);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    line-height: 1.3;
+  }
+  .verdict-btn:hover { border-color: var(--light-green); color: var(--white); }
+  .verdict-btn.selected-good { background: var(--green); border-color: var(--green); color: var(--white); }
+  .verdict-btn.selected-caution { background: #C4622D; border-color: #C4622D; color: var(--white); }
+  .verdict-btn.selected-pass { background: #8B1A1A; border-color: #8B1A1A; color: var(--white); }
+
+  .summary-bar {
+    background: var(--white);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    border-left: 4px solid var(--green);
+  }
+  .summary-counts {
+    display: flex;
+    gap: 24px;
+  }
+  .count-item { text-align: center; }
+  .count-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .count-num.green { color: var(--green); }
+  .count-num.warn { color: var(--warn); }
+  .count-num.total { color: var(--dark); }
+  .count-label {
+    font-size: 11px;
+    color: var(--gray);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .print-btn {
+    background: var(--dark);
+    color: var(--white);
+    border: none;
+    padding: 12px 28px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .print-btn:hover { background: var(--green); }
+
+  .footer-brand {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: var(--gray);
+    font-weight: 300;
+    letter-spacing: 0.08em;
+  }
+  .footer-brand strong {
+    font-weight: 600;
+    color: var(--dark);
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+  }
+
+  @media print {
+    body { padding: 0; background: white; }
+    .print-btn { display: none; }
+    .status-btn { display: none; }
+  }
+  @media (max-width: 500px) {
+    .property-info { grid-template-columns: 1fr; }
+    .verdict-options { grid-template-columns: 1fr; }
+    .summary-counts { gap: 16px; }
+    .header { padding: 24px 20px; }
+    .item { padding: 12px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>FHA Property<br><em>Checklist</em></h1>
+      <p>McKayla Jodon · Real of Ohio · Licensed Ohio REALTOR®</p>
+    </div>
+  </div>
+  <div class="property-info">
+    <div class="info-field">
+      <label>Property Address</label>
+      <input type="text" placeholder="123 Main St, Marion OH">
+    </div>
+    <div class="info-field">
+      <label>Showing Date</label>
+      <input type="text" placeholder="MM/DD/YYYY">
+    </div>
+    <div class="info-field">
+      <label>Buyer Name</label>
+      <input type="text" placeholder="Client name">
+    </div>
+    <div class="info-field">
+      <label>List Price</label>
+      <input type="text" placeholder="$000,000">
+    </div>
+  </div>
+</div>
+
+<!-- Summary bar -->
+<div class="summary-bar">
+  <div class="summary-counts">
+    <div class="count-item">
+      <div class="count-num green" id="okCount">0</div>
+      <div class="count-label">Passed</div>
+    </div>
+    <div class="count-item">
+      <div class="count-num warn" id="flagCount">0</div>
+      <div class="count-label">Flagged</div>
+    </div>
+    <div class="count-item">
+      <div class="count-num total" id="totalCount">0</div>
+      <div class="count-label">Checked</div>
+    </div>
+  </div>
+  <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+</div>
+
+<!-- SECTION 1: Structure & Exterior -->
+<div class="section">
+  <div class="section-header pass">
+    <div class="section-icon">🏠</div>
+    <div class="section-title">Structure & Exterior</div>
+  </div>
+  <div class="items" id="section1">
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">Foundation is solid — no major cracks or settling</div>
+        <div class="item-note">Look for horizontal cracks, bowing walls, or uneven floors</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">Roof has at least 2 years of life remaining</div>
+        <div class="item-note">Missing shingles, sagging, or visible wear will be flagged by appraiser</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">No peeling or chipping paint — interior or exterior</div>
+        <div class="item-note">AUTOMATIC FHA FLAG — lead paint concern, must be remediated before closing</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">No broken windows or doors that won't lock/latch</div>
+        <div class="item-note">Security and weatherproofing are FHA requirements</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">Safe access to property — driveway, walkway, entry</div>
+        <div class="item-note">No major trip hazards, collapsed steps, or blocked access</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">Handrails on all staircases</div>
+        <div class="item-note">Required on any staircase with 3+ steps</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2: Systems -->
+<div class="section">
+  <div class="section-header pass">
+    <div class="section-icon">⚡</div>
+    <div class="section-title">Mechanical Systems</div>
+  </div>
+  <div class="items">
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">Permanent heat source in every room</div>
+        <div class="item-note">Space heaters do NOT count — must be hard-wired or ducted</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">No exposed or faulty wiring visible</div>
+        <div class="item-note">Check basement, attic access, and older panel boxes</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">Hot water heater is present and up to code</div>
+        <div class="item-note">Check for strapping, TPR valve, and age (10–12 yr lifespan)</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">Plumbing is functional — no visible leaks</div>
+        <div class="item-note">Run faucets, check under sinks, look for water stains on ceilings</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">Stove/range is present</div>
+        <div class="item-note">FHA may require stove to be present at time of appraisal</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 3: Health & Safety -->
+<div class="section">
+  <div class="section-header warn">
+    <div class="section-icon">⚠️</div>
+    <div class="section-title">Health & Safety — Red Flags</div>
+  </div>
+  <div class="items">
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">No visible mold or mildew anywhere</div>
+        <div class="item-note">Check bathrooms, basement, crawl space, and around windows</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">No standing water or moisture in basement/crawl space</div>
+        <div class="item-note">Smell it too — musty odor is a giveaway even without visible water</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">No signs of pest or termite damage</div>
+        <div class="item-note">Look for mud tubes, hollow-sounding wood, or frass (termite droppings)</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">No unpermitted additions or structures</div>
+        <div class="item-note">Additions without permits can cause appraisal and title issues</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4: Rural Specific -->
+<div class="section">
+  <div class="section-header rural">
+    <div class="section-icon">🌾</div>
+    <div class="section-title">Rural & Acreage Specific</div>
+  </div>
+  <div class="items">
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">Well water — will need quality test (bacteria + nitrates)</div>
+        <div class="item-note">Required for FHA — seller typically pays, budget time for results</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">Septic system is functional and properly distanced from well</div>
+        <div class="item-note">Minimum distance varies — appraiser will flag if too close</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">Outbuildings/pole barns don't exceed home value</div>
+        <div class="item-note">FHA lends on residential value — farm structures can complicate appraisal</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">Property is primarily residential — not commercial use</div>
+        <div class="item-note">Mixed-use or active farm operations can disqualify FHA financing</div>
+      </div>
+    </div>
+    <div class="item" onclick="toggleItem(this)">
+      <div class="item-status">
+        <button class="status-btn ok-btn" onclick="setStatus(event, this, 'ok')">✓</button>
+        <button class="status-btn flag-btn" onclick="setStatus(event, this, 'flag')">!</button>
+      </div>
+      <div class="item-text">
+        <div class="item-label">Acreage is typical for the area — not excess farm land</div>
+        <div class="item-note">FHA appraises residential portion only — large acreage may affect value</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notes -->
+<div class="notes-section">
+  <h3>Showing Notes</h3>
+  <textarea placeholder="Note any concerns, repair needs, or items to discuss with buyer..."></textarea>
+</div>
+
+<!-- Verdict -->
+<div class="verdict">
+  <h3>Overall FHA Verdict</h3>
+  <div class="verdict-options">
+    <button class="verdict-btn" onclick="selectVerdict(this, 'good')">✅ FHA Ready<br><span style="font-weight:300;font-size:11px">No major issues</span></button>
+    <button class="verdict-btn" onclick="selectVerdict(this, 'caution')">⚠️ Needs Negotiation<br><span style="font-weight:300;font-size:11px">Repairs required</span></button>
+    <button class="verdict-btn" onclick="selectVerdict(this, 'pass')">🚫 FHA Risk<br><span style="font-weight:300;font-size:11px">Consider conventional</span></button>
+  </div>
+</div>
+
+<div class="footer-brand">
+  <strong>McKayla Jodon</strong> · Real of Ohio · Licensed Ohio REALTOR®
+</div>
+
+<script>
+  function setStatus(e, btn, type) {
+    e.stopPropagation();
+    const item = btn.closest('.item');
+    const okBtn = item.querySelector('.ok-btn');
+    const flagBtn = item.querySelector('.flag-btn');
+    const label = item.querySelector('.item-label');
+
+    if (type === 'ok') {
+      if (okBtn.classList.contains('ok')) {
+        okBtn.classList.remove('ok');
+        label.classList.remove('checked-text');
+      } else {
+        okBtn.classList.add('ok');
+        flagBtn.classList.remove('flag');
+        label.classList.add('checked-text');
+      }
+    } else {
+      if (flagBtn.classList.contains('flag')) {
+        flagBtn.classList.remove('flag');
+      } else {
+        flagBtn.classList.add('flag');
+        okBtn.classList.remove('ok');
+        label.classList.remove('checked-text');
+      }
+    }
+    updateCounts();
+  }
+
+  function updateCounts() {
+    const ok = document.querySelectorAll('.ok-btn.ok').length;
+    const flagged = document.querySelectorAll('.flag-btn.flag').length;
+    document.getElementById('okCount').textContent = ok;
+    document.getElementById('flagCount').textContent = flagged;
+    document.getElementById('totalCount').textContent = ok + flagged;
+
+    const bar = document.querySelector('.summary-bar');
+    if (flagged >= 3) bar.style.borderLeftColor = '#C4622D';
+    else if (flagged >= 1) bar.style.borderLeftColor = '#E8925A';
+    else bar.style.borderLeftColor = '#5A8A4A';
+  }
+
+  function selectVerdict(btn, type) {
+    document.querySelectorAll('.verdict-btn').forEach(b => {
+      b.classList.remove('selected-good', 'selected-caution', 'selected-pass');
+    });
+    btn.classList.add('selected-' + type);
+  }
+</script>
+</body>
+</html>
